@@ -4,6 +4,12 @@ var through = require('through');
 var path = require('path');
 function process(file, data, callback) {
   mothership(file, function (pack) { return !! pack['browser'] && !! pack['browserify-window-context'] }, function (err, res) {
+    if (!res) {
+      // When importing a file from outside the project, 
+      // a mothership package.json will not be found
+      return data;
+    }
+
     pack = res.pack;
     browser = pack['browser'];
     var filePath = path.resolve(file);
